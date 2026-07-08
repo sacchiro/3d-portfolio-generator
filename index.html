@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Portfolio Builder Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body class="dashboard-root">
+
+    <nav class="dash-sidebar">
+        <div class="sidebar-logo">3D.studio</div>
+        <ul class="sidebar-menu">
+            <li class="menu-item active"><span class="menu-icon">✦</span> Workspace</li>
+            <li class="menu-item"><span class="menu-icon">⚡</span> Templates</li>
+            <li class="menu-item"><span class="menu-icon">✿</span> Assets</li>
+            <li class="menu-item"><span class="menu-icon">⚙︎</span> Settings</li>
+        </ul>
+        <div class="sidebar-footer">
+            <div id="sidebar-avatar-preview" class="user-avatar"></div>
+            <div class="user-info">
+                <div id="sidebar-name-preview" class="user-name">Amirah</div>
+                <div class="user-status">Pro Designer</div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dash-preview-area">
+        <div class="preview-header">
+            <div class="preview-badge">✦ Studio Canvas View</div>
+            <div class="preview-controls">
+                <button id="btn-desktop" class="view-toggle active">Desktop</button>
+                <button id="btn-mobile" class="view-toggle">Mobile</button>
+            </div>
+        </div>
+        
+        <div class="preview-window-container">
+            <div id="browser-frame" class="simulated-browser">
+                <div class="browser-top-bar">
+                    <div class="browser-dots"><span></span><span></span><span></span></div>
+                    <div class="browser-address">localhost:5500/view.html</div>
+                </div>
+                
+                <canvas id="three-canvas"></canvas>
+
+                <div class="browser-content-placeholder"></div>
+            </div>
+        </div>
+    </main>
+
+    <aside class="dash-custom-panel">
+        <div class="panel-scroll-wrapper">
+            <div class="panel-section">
+                <div class="panel-section-title">Profile Configuration</div>
+                
+                <div class="control-group">
+                    <label>Display Name</label>
+                    <input type="text" id="input-name" value="Amirah">
+                </div>
+
+                <div class="control-group">
+                    <label>Accent Title Badge</label>
+                    <input type="text" id="input-title" value="Web Developer">
+                </div>
+
+                <div class="control-group">
+                    <label>Hero Headline / About Statement</label>
+                    <textarea id="input-about" rows="3">Curious designer, \nimage maker, \nstoryteller</textarea>
+                </div>
+
+                <div class="control-group">
+                    <label>Profile Picture Upload</label>
+                    <div class="avatar-upload-row">
+                        <div id="upload-preview-box" class="upload-preview-square"></div>
+                        <label class="file-input-label">
+                            Upload Photo
+                            <input type="file" id="input-avatar" accept="image/*" style="display: none;">
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-section-title" style="margin-top: 24px;">3D Geometry Matrix</div>
+                <div class="control-group">
+                    <label>Mesh Structural Form</label>
+                    <select id="input-shape">
+                        <option value="torus">Torus Knot (Default)</option>
+                        <option value="cube">Geometric Cube</option>
+                        <option value="sphere">Orb</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label>Active Theme Tint Color</label>
+                    <div class="color-picker-wrapper">
+                        <input type="color" id="input-color" value="#00ffcc">
+                        <span id="color-hex-label" class="color-value-label">#00FFCC</span>
+                    </div>
+                </div>
+
+                <div class="panel-section-title" style="margin-top: 24px;">Projects Workspace</div>
+                <div class="control-group">
+                    <div class="project-header-row">
+                        <label>Manage Deck Items</label>
+                        <button type="button" id="btn-add-project" class="small-action-btn">+ Add Item</button>
+                    </div>
+                    
+                    <div id="panel-projects-list" class="panel-drag-sortable-list"></div>
+                </div>
+
+                <button class="action-btn-generate" style="width:100%; margin-top: 20px;">Compile & Export Portfolio</button>
+            </div>
+        </div>
+    </aside>
+
+    <script src="https://fastly.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+    
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,333 @@
+/* --- 1. CORE LAYOUT STYLES --- */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    background-color: #faf9f6;
+    color: #111111;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden; 
+}
+
+.dashboard-root {
+    display: grid;
+    grid-template-columns: 260px 1fr 380px;
+    height: 100vh;
+    width: 100vw;
+}
+
+/* --- 2. SIDEBAR NAVIGATION --- */
+.dash-sidebar {
+    background-color: #ffffff;
+    border-right: 2px solid #111111;
+    display: flex;
+    flex-direction: column;
+    padding: 32px 20px;
+    box-sizing: border-box;
+    height: 100vh;
+}
+.sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 48px;
+    padding-left: 12px;
+}
+.sidebar-menu { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+.menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 16px;
+    color: #666666;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+.menu-item.active { background: #111111; color: #ffffff; }
+.menu-icon { margin-right: 14px; }
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    background: #f0f0ed;
+    border-radius: 16px;
+    border: 2px solid #111111;
+}
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: 2px solid #111111;
+    margin-right: 12px;
+    background-color: #e2e2e0;
+    background-size: cover;
+    background-position: center;
+}
+.user-name { font-size: 0.85rem; font-weight: 700; }
+.user-status { font-size: 0.75rem; color: #666666; font-weight: 600; }
+
+/* --- 3. LIVE CANVAS VIEW WORKSPACE --- */
+.dash-preview-area {
+    background-color: #f5f4ef;
+    display: flex;
+    flex-direction: column;
+    padding: 32px;
+    box-sizing: border-box;
+    height: 100vh;
+}
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    height: 40px;
+}
+.preview-badge {
+    background: #ffffff;
+    padding: 8px 16px;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    border: 2px solid #111111;
+}
+.view-toggle {
+    background: #ffffff;
+    border: 2px solid #111111;
+    color: #111111;
+    padding: 8px 16px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 10px;
+    margin-left: 8px;
+}
+.view-toggle.active { background: #111111; color: #ffffff; }
+
+.preview-window-container {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 130px);
+    overflow: hidden;
+}
+.simulated-browser {
+    width: 100%;
+    height: 100%;
+    background: #ffffff;
+    border-radius: 24px;
+    border: 2px solid #111111;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 10px 10px 0px rgba(17,17,17,0.04);
+    transition: width 0.25s ease, max-width 0.25s ease, height 0.25s ease;
+}
+.simulated-browser.mobile-frame { max-width: 380px; height: 100%; }
+
+.browser-top-bar {
+    background: #ffffff;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    border-bottom: 2px solid #111111;
+    height: 20px;
+    position: relative;
+    z-index: 10;
+}
+.browser-dots { display: flex; gap: 8px; margin-right: 24px; }
+.browser-dots span { width: 12px; height: 12px; border-radius: 50%; border: 2px solid #111111; }
+.browser-address {
+    background: #f5f4ef;
+    padding: 4px 20px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #666666;
+    border: 2px solid #111111;
+}
+
+/* --- 4. PORTFOLIO LANDING CONTENT (DYNAMIC INTEGRATION) --- */
+.browser-content-placeholder {
+    flex-grow: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    height: calc(100% - 50px);
+    position: relative;
+    z-index: 2;
+    box-sizing: border-box;
+}
+
+#three-canvas {
+    position: absolute;
+    top: 50px; /* Accounts for address bar space layout offset */
+    left: 0;
+    width: 100% !important;
+    height: calc(100% - 50px) !important;
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* --- 5. DYNAMIC PROJECTS VIEW CONTAINER --- */
+.live-projects-grid {
+    display: grid !important;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)) !important;
+    gap: 20px !important;
+    margin-top: 24px !important;
+    width: 100% !important;
+}
+.live-project-card {
+    border: 2px solid #111111;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #ffffff;
+    box-shadow: 4px 4px 0px #111111;
+}
+.project-card-image {
+    height: 110px;
+    background-color: #f0f0ed;
+    background-size: cover;
+    background-position: center;
+    border-bottom: 2px solid #111111;
+}
+.project-card-details { padding: 14px; }
+.project-card-details h3 { margin: 0 0 6px 0; font-size: 1rem; font-weight: 700; }
+.project-card-details p { margin: 0; font-size: 0.8rem; color: #666666; line-height: 1.4; }
+
+/* --- 6. RIGHT SIDEBAR SCROLL PANEL --- */
+.dash-custom-panel {
+    background-color: #ffffff;
+    border-left: 2px solid #111111;
+    box-sizing: border-box;
+    height: 100vh;
+}
+.panel-scroll-wrapper {
+    padding: 40px 24px;
+    height: 100vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+.panel-section-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 24px; }
+.control-group { margin-bottom: 20px; }
+.control-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 700; }
+.control-group input[type="text"], select, textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 2px solid #111111;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    font-family: inherit;
+    box-sizing: border-box;
+    background: #ffffff;
+}
+
+.avatar-upload-row { display: flex; align-items: center; gap: 16px; }
+.upload-preview-square { width: 52px; height: 52px; border: 2px solid #111111; border-radius: 12px; background: #f0f0ed; background-size: cover; background-position: center; }
+.file-input-label { padding: 10px 16px; background: #f0f0ed; border: 2px solid #111111; border-radius: 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+
+.color-picker-wrapper { display: flex; align-items: center; gap: 12px; }
+.color-picker-wrapper input[type="color"] { border: 2px solid #111111; width: 40px; height: 40px; border-radius: 8px; padding: 0; cursor: pointer; }
+.color-value-label { font-size: 0.85rem; font-weight: 700; }
+
+/* --- 7. DYNAMIC PROJECT ROW WORKSPACE --- */
+.project-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.small-action-btn { background: #111111; color: #ffffff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.panel-drag-sortable-list { display: flex; flex-direction: column; gap: 12px; }
+.panel-project-item { background: #faf9f6; border: 2px solid #111111; border-radius: 12px; padding: 12px; position: relative; cursor: grab; }
+.panel-project-item.dragging { opacity: 0.5; border-style: dashed; }
+.project-item-top { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.drag-handle { font-size: 1rem; color: #999; user-select: none; }
+.project-item-top input { flex-grow: 1; padding: 6px 10px; border: 2px solid #111111; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
+.btn-delete-project { background: none; border: none; color: #ff4444; font-weight: 900; cursor: pointer; font-size: 1.2rem; }
+.project-item-bottom { display: flex; gap: 8px; align-items: center; }
+.project-item-bottom textarea { flex-grow: 1; padding: 6px 10px; border: 2px solid #111111; border-radius: 6px; font-size: 0.75rem; resize: none; }
+.mini-upload-btn { width: 32px; height: 32px; border: 2px solid #111111; border-radius: 6px; background: #f0f0ed; background-size: cover; background-position: center; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+
+.action-btn-generate { width: 100%; padding: 16px; background: #111111; color: #ffffff; font-weight: 700; font-family: inherit; border: 2px solid #111111; border-radius: 12px; cursor: pointer; margin-top: auto; }
+
+/* --- 7. ASSETS WORKSPACE UI ELEMENT BOARDS --- */
+.assets-category-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.asset-tab-btn {
+    background: #ffffff;
+    border: 2px solid #111111;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.asset-tab-btn.active {
+    background: #111111;
+    color: #ffffff;
+}
+
+.assets-grid-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    max-height: 520px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+.asset-card {
+    background: #ffffff;
+    border: 2px solid #111111;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.asset-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px #111111;
+}
+
+.asset-card.active-mesh {
+    background: #f1f0ea;
+    border-color: #111111;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
+}
+
+.asset-card .asset-preview-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    user-select: none;
+}
+
+.asset-card span {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.asset-badge-tag {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    font-size: 0.6rem;
+    background: #111;
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 900;
+}

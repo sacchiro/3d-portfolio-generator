@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compiled Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Space+Grotesk:wght@400;700&family=Playfair+Display:ital,wght@0,600;0,900;1,400&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { 
+            overflow-x: hidden; 
+            min-height: 100vh;
+            position: relative;
+            background-color: #fff;
+            color: #111;
+        }
+        
+        #view-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .portfolio-wrapper {
+            position: relative;
+            z-index: 2;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Global Base Card Styles for Animations */
+        .card {
+            cursor: pointer;
+            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), 
+                        border-color 0.3s ease;
+        }
+
+        /* Profile Block for alignment */
+        .profile-block {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .center-profile {
+            align-items: center;
+            text-align: center;
+        }
+
+        /* -------------------------------------------
+           TEMPLATE 1: DEFAULT BRUTALIST (Bold & Raw)
+        ------------------------------------------- */
+        .tmpl-t1 { font-family: 'Montserrat', sans-serif; }
+        .tmpl-t1 .nav { display: flex; justify-content: space-between; font-weight: 900; text-transform: uppercase; margin-bottom: 60px; }
+        .tmpl-t1 h1 { font-size: 4rem; font-weight: 900; line-height: 1.05; letter-spacing: -2px; margin-bottom: 24px; text-transform: uppercase; }
+        .tmpl-t1 .badge { display: inline-block; padding: 10px 24px; border: 3px solid #111; font-weight: 900; text-transform: uppercase; box-shadow: 4px 4px 0px #111; }
+        .tmpl-t1 .grid-title { font-size: 2.5rem; font-weight: 900; text-transform: uppercase; border-bottom: 5px solid #111; padding-bottom: 10px; margin: 100px 0 40px; }
+        .tmpl-t1 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
+        .tmpl-t1 .card { background: #fff; border: 3px solid #111; box-shadow: 6px 6px 0px #111; overflow: hidden; }
+        .tmpl-t1 .card:hover { transform: translate(-4px, -4px); box-shadow: 10px 10px 0px #111; }
+        .tmpl-t1 .card-img { height: 220px; background-color: #ddd; background-size: cover; background-position: center; border-bottom: 3px solid #111; }
+        .tmpl-t1 .card-det { padding: 20px; }
+        .tmpl-t1 .card-det h3 { font-size: 1.4rem; font-weight: 900; margin-bottom: 8px; text-transform: uppercase; }
+        .tmpl-t1 .avatar-img { width: 120px; height: 120px; border-radius: 0px; border: 4px solid #111; box-shadow: 5px 5px 0px #111; object-fit: cover; }
+
+        /* -------------------------------------------
+           TEMPLATE 2: NEON CYBER (Tech Sci-Fi)
+        ------------------------------------------- */
+        .tmpl-t2 { font-family: 'Space Grotesk', sans-serif; color: #00ffcc; }
+        .tmpl-t2 .nav { display: flex; justify-content: space-between; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 60px; border-bottom: 1px solid rgba(0,255,204,0.3); padding-bottom: 15px; }
+        .tmpl-t2 h1 { font-size: 3.5rem; font-weight: 700; color: #fff; text-shadow: 0 0 10px rgba(0,255,204,0.5); margin-bottom: 24px; }
+        .tmpl-t2 .badge { display: inline-block; padding: 6px 16px; border: 1px solid #00ffcc; background: rgba(0,255,204,0.1); font-weight: 700; letter-spacing: 1px; }
+        .tmpl-t2 .grid-title { font-size: 1.8rem; letter-spacing: 3px; text-transform: uppercase; color: #fff; margin: 100px 0 30px; }
+        .tmpl-t2 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 24px; }
+        .tmpl-t2 .card { background: #121214; border: 1px solid rgba(0,255,204,0.4); border-radius: 4px; overflow: hidden; }
+        .tmpl-t2 .card:hover { transform: translateY(-6px); border-color: #00ffcc; box-shadow: 0 0 20px rgba(0,255,204,0.3); }
+        .tmpl-t2 .card-img { height: 200px; background-color: #1a1a24; background-size: cover; background-position: center; border-bottom: 1px solid rgba(0,255,204,0.4); }
+        .tmpl-t2 .card-det { padding: 20px; }
+        .tmpl-t2 .card-det h3 { color: #fff; font-size: 1.2rem; margin-bottom: 8px; }
+        .tmpl-t2 .card-det p { color: #8a99ad; font-size: 0.9rem; }
+        .tmpl-t2 .avatar-img { width: 110px; height: 110px; border-radius: 50%; border: 2px solid #00ffcc; box-shadow: 0 0 15px rgba(0,255,204,0.4); object-fit: cover; }
+
+        /* -------------------------------------------
+           TEMPLATE 3: PASTEL EDITORIAL (Elegant Serif)
+        ------------------------------------------- */
+        .tmpl-t3 { font-family: 'Inter', sans-serif; max-width: 900px !important; }
+        .tmpl-t3 .nav { display: flex; justify-content: space-between; font-family: 'Playfair Display', serif; font-style: italic; margin-bottom: 80px; font-size: 1.2rem; }
+        .tmpl-t3 h1 { font-family: 'Playfair Display', serif; font-weight: 400; font-size: 3.8rem; line-height: 1.2; margin-bottom: 30px; letter-spacing: -0.5px; }
+        .tmpl-t3 .badge { display: inline-block; padding: 6px 18px; border-radius: 50px; font-size: 0.85rem; font-weight: 600; color: #fff; }
+        .tmpl-t3 .grid-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; font-style: italic; font-weight: 400; margin: 120px 0 40px; text-align: center; }
+        .tmpl-t3 .grid { display: flex; flex-direction: column; gap: 60px; }
+        .tmpl-t3 .card { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        @media(max-width: 768px) { .tmpl-t3 .card { grid-template-columns: 1fr; gap: 20px; } }
+        .tmpl-t3 .card:hover { transform: translateY(-4px); }
+        .tmpl-t3 .card:hover .card-img { box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+        .tmpl-t3 .card-img { height: 280px; background-color: #f0f0ed; background-size: cover; background-position: center; border-radius: 8px; transition: box-shadow 0.3s ease; }
+        .tmpl-t3 .card-det h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; margin-bottom: 12px; }
+        .tmpl-t3 .card-det p { color: #555; line-height: 1.6; }
+        .tmpl-t3 .avatar-img { width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 1px solid #ddd; padding: 6px; background: #fff; }
+
+        /* -------------------------------------------
+           TEMPLATE 4: DARK BENTO GRID (Modular Blocks)
+        ------------------------------------------- */
+        .tmpl-t4 { font-family: 'Inter', sans-serif; color: #fff; }
+        .tmpl-t4 .nav { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 40px; background: #1c1c1e; padding: 15px 25px; border-radius: 12px; }
+        .tmpl-t4 .bento-hero { background: #1c1c1e; padding: 40px; border-radius: 16px; margin-bottom: 32px; border: 1px solid #2c2c2e; }
+        .tmpl-t4 h1 { font-size: 3rem; font-weight: 800; line-height: 1.2; margin-bottom: 20px; letter-spacing: -1px; }
+        .tmpl-t4 .badge { display: inline-block; padding: 8px 16px; border-radius: 8px; font-weight: 700; color: #000; font-size: 0.85rem; }
+        .tmpl-t4 .grid-title { font-size: 1.6rem; font-weight: 700; margin: 60px 0 24px; color: #a1a1a6; }
+        .tmpl-t4 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
+        .tmpl-t4 .card { background: #1c1c1e; border: 1px solid #2c2c2e; border-radius: 16px; overflow: hidden; padding: 24px; display: flex; flex-direction: column; gap: 16px; }
+        .tmpl-t4 .card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.25); box-shadow: 0 12px 30px rgba(0,0,0,0.4); }
+        .tmpl-t4 .card-img { height: 160px; background-color: #2c2c2e; background-size: cover; background-position: center; border-radius: 8px; }
+        .tmpl-t4 .card-det h3 { font-size: 1.25rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .tmpl-t4 .card-det p { color: #aeaeb2; font-size: 0.9rem; line-height: 1.5; }
+        .tmpl-t4 .avatar-img { width: 90px; height: 90px; border-radius: 16px; object-fit: cover; border: 1px solid #2c2c2e; }
+
+        /* -------------------------------------------
+           TEMPLATE 5: CLEAN CORPORATE BOLD (Modern Tech)
+        ------------------------------------------- */
+        .tmpl-t5 { font-family: 'Inter', sans-serif; color: #0f172a; }
+        .tmpl-t5 .nav { display: flex; justify-content: space-between; font-weight: 700; margin-bottom: 80px; border-bottom: 2px solid #f1f5f9; padding-bottom: 20px; }
+        .tmpl-t5 h1 { font-size: 3.8rem; font-weight: 800; line-height: 1.15; color: #0f172a; margin-bottom: 24px; letter-spacing: -1.5px; }
+        .tmpl-t5 .badge { display: inline-block; padding: 6px 14px; border-radius: 4px; font-weight: 600; font-size: 0.85rem; color: #fff; }
+        .tmpl-t5 .grid-title { font-size: 2rem; font-weight: 800; color: #0f172a; margin: 100px 0 32px; }
+        .tmpl-t5 .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 32px; }
+        .tmpl-t5 .card { background: #fff; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03); }
+        .tmpl-t5 .card:hover { transform: translateY(-6px); box-shadow: 0 12px 20px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); }
+        .tmpl-t5 .card-img { height: 210px; background-color: #f8fafc; background-size: cover; background-position: center; }
+        .tmpl-t5 .card-det { padding: 24px; border-top: 1px solid #e2e8f0; }
+        .tmpl-t5 .card-det h3 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; color: #1e293b; }
+        .tmpl-t5 .card-det p { color: #64748b; font-size: 0.95rem; line-height: 1.5; }
+        .tmpl-t5 .avatar-img { width: 100px; height: 100px; border-radius: 24px; object-fit: cover; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+
+    <canvas id="view-canvas"></canvas>
+
+    <div id="render-root" class="portfolio-wrapper"></div>
+
+    <script src="https://fastly.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        
+        if (params.has('name') || params.has('projects')) {
+            let extractedProjects = [];
+            try {
+                extractedProjects = JSON.parse(decodeURIComponent(params.get('projects') || '[]'));
+            } catch(e) {
+                extractedProjects = [];
+            }
+
+            const payload = {
+                name: params.get('name'),
+                title: params.get('title'),
+                about: params.get('about'),
+                shape: params.get('shape'),
+                color: params.get('color'),
+                template: params.get('template'),
+                bgStyle: params.get('bgStyle'),
+                avatar: params.get('avatar'),
+                projects: extractedProjects
+            };
+
+            localStorage.setItem('activePortfolioData', JSON.stringify(payload));
+            window.location.href = window.location.origin + window.location.pathname;
+        }
+
+        const savedDataRaw = localStorage.getItem('activePortfolioData');
+        let data = {};
+        try {
+            if(savedDataRaw) data = JSON.parse(savedDataRaw);
+        } catch(e) {
+            console.error(e);
+        }
+
+        // Global state configuration references definitions
+        let name = data.name || 'Amirah';
+        let title = data.title || 'Web Developer';
+        let about = data.about || 'Curious Designer';
+        let shape = data.shape || 'torus';
+        
+        let rawColor = data.color || '00FFCC';
+        if (!rawColor.startsWith('#')) rawColor = '#' + rawColor;
+        let color = rawColor;
+
+        let template = data.template || 'T1';
+        let bgStyle = data.bgStyle || 'transparent';
+        let avatar = data.avatar || '';
+        let projects = data.projects || [];
+
+        // Main initial UI Rendering Engine Activation
+        const root = document.getElementById('render-root');
+        
+        function renderLiveUpdate() {
+            if(template === 'T2' || template === 'T4' || bgStyle === 'dark') {
+                document.body.style.backgroundColor = '#0b0c10';
+                if(template === 'T4') document.body.style.backgroundColor = '#0c0c0e';
+            } else if (bgStyle === 'grid') {
+                document.body.style.backgroundColor = '#fbfbfa';
+            } else {
+                document.body.style.backgroundColor = '#ffffff';
+            }
+
+            const avatarHtml = avatar ? `<img src="${avatar.startsWith('data:') ? avatar : decodeURIComponent(avatar)}" class="avatar-img" alt="Profile">` : '';
+            const parsedAbout = about.replace(/\\n/g, '<br>');
+
+            const projectsMarkup = projects.map(p => {
+                return `
+                    <div class="card">
+                        <div class="card-img" style="background-image: url('${p.img || ''}')"></div>
+                        <div class="card-det">
+                            <h3>${p.title || 'Untitled Project'}</h3>
+                            <p>${p.desc || ''}</p>
+                        </div>
+                    </div>`;
+            }).join('');
+
+            // Inject structural framework markup
+            if(template === 'T2') {
+                root.className = "portfolio-wrapper tmpl-t2";
+                root.innerHTML = `
+                    <nav class="nav"><span>${name}</span><div><span>Work</span></div></nav>
+                    <div class="profile-block">
+                        ${avatarHtml}
+                        <div class="badge" style="border-color:${color}; color:${color}">${title}</div>
+                    </div>
+                    <h1>${parsedAbout}</h1>
+                    <h2 class="grid-title">// System_Log // Selected_Projects</h2>
+                    <div class="grid">${projectsMarkup}</div>`;
+            } else if(template === 'T3') {
+                root.className = "portfolio-wrapper tmpl-t3";
+                root.innerHTML = `
+                    <nav class="nav"><span>${name}</span><div><span>Selected Work</span></div></nav>
+                    <div class="profile-block center-profile">
+                        ${avatarHtml}
+                        <div class="badge" style="background-color:${color}; color:#111;">${title}</div>
+                        <h1 style="margin-top:20px;">${parsedAbout}</h1>
+                    </div>
+                    <h2 class="grid-title">Selected Index</h2>
+                    <div class="grid">${projectsMarkup}</div>`;
+            } else if(template === 'T4') {
+                root.className = "portfolio-wrapper tmpl-t4";
+                root.innerHTML = `
+                    <nav class="nav"><span>${name}</span><span>Portfolio Archive</span></nav>
+                    <div class="bento-hero">
+                        <div class="profile-block">
+                            ${avatarHtml}
+                            <div class="badge" style="background-color:${color}; color:#000;">${title}</div>
+                        </div>
+                        <h1>${parsedAbout}</h1>
+                    </div>
+                    <h2 class="grid-title">Index / Nodes</h2>
+                    <div class="grid">${projectsMarkup}</div>`;
+            } else if(template === 'T5') {
+                root.className = "portfolio-wrapper tmpl-t5";
+                root.innerHTML = `
+                    <nav class="nav"><span>${name}</span><span>Index</span></nav>
+                    <div class="profile-block">
+                        ${avatarHtml}
+                        <div class="badge" style="background-color:${color}; color:#fff;">${title}</div>
+                    </div>
+                    <h1>${parsedAbout}</h1>
+                    <h2 class="grid-title">Selected Artifacts</h2>
+                    <div class="grid">${projectsMarkup}</div>`;
+            } else {
+                root.className = "portfolio-wrapper tmpl-t1";
+                root.innerHTML = `
+                    <nav class="nav"><span>${name}</span><span>Menu</span></nav>
+                    <div class="profile-block">
+                        ${avatarHtml}
+                        <div class="badge" style="background-color:${color}; color:#fff;">${title}</div>
+                    </div>
+                    <h1>${parsedAbout}</h1>
+                    <h2 class="grid-title">Selected Work</h2>
+                    <div class="grid">${projectsMarkup}</div>`;
+            }
+
+            // Instantly sync live mutations into Three.js canvas components
+            if (mesh) {
+                if (mesh.material) mesh.material.color.set(color);
+                
+                // Regenerate matching shape geometries safely on modification sequences
+                if (mesh.geometry) mesh.geometry.dispose();
+                let newGeo;
+                if (shape === 'cube') newGeo = new THREE.BoxGeometry(1.4, 1.4, 1.4);
+                else if (shape === 'sphere') newGeo = new THREE.SphereGeometry(1.1, 24, 24);
+                else if (shape === 'cone') newGeo = new THREE.ConeGeometry(0.9, 1.6, 16, 1, true);
+                else if (shape === 'cylinder') newGeo = new THREE.CylinderGeometry(0.7, 0.7, 1.6, 16, 1, true);
+                else if (shape === 'tetrahedron') newGeo = new THREE.TetrahedronGeometry(1.3, 0);
+                else newGeo = new THREE.TorusKnotGeometry(0.7, 0.22, 100, 16);
+                mesh.geometry = newGeo;
+            }
+        }
+
+        // Render Three.js Canvas Elements Engine Lookups
+        const canvas = document.getElementById('view-canvas');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+        camera.position.z = 4;
+
+        const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+        let geometry;
+        if (shape === 'cube') geometry = new THREE.BoxGeometry(1.4, 1.4, 1.4);
+        else if (shape === 'sphere') geometry = new THREE.SphereGeometry(1.1, 24, 24);
+        else if (shape === 'cone') geometry = new THREE.ConeGeometry(0.9, 1.6, 16, 1, true);
+        else if (shape === 'cylinder') geometry = new THREE.CylinderGeometry(0.7, 0.7, 1.6, 16, 1, true);
+        else if (shape === 'tetrahedron') geometry = new THREE.TetrahedronGeometry(1.3, 0);
+        else geometry = new THREE.TorusKnotGeometry(0.7, 0.22, 100, 16);
+
+        const material = new THREE.MeshBasicMaterial({ color: color, wireframe: true });
+        const mesh = new THREE.Mesh(geometry, material);
+        if(window.innerWidth > 768) mesh.position.x = 1.6;
+        scene.add(mesh);
+
+        if (bgStyle === 'grid') {
+            const gridHelper = new THREE.GridHelper(20, 20, color, '#444444');
+            gridHelper.position.y = -1.5;
+            gridHelper.rotation.x = 0.2;
+            scene.add(gridHelper);
+        } else if (bgStyle === 'particles') {
+            const particleCount = 150;
+            const pGeometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(particleCount * 3);
+            for(let i=0; i < particleCount * 3; i+=3) {
+                positions[i] = (Math.random() - 0.5) * 10;
+                positions[i+1] = (Math.random() - 0.5) * 10;
+                positions[i+2] = (Math.random() - 0.5) * 5;
+            }
+            pGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const pMaterial = new THREE.PointsMaterial({ color: color, size: 0.04 });
+            const particles = new THREE.Points(pGeometry, pMaterial);
+            scene.add(particles);
+            window.bgParticles = particles;
+        }
+
+        let mouseX = 0, mouseY = 0;
+        window.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX / window.innerWidth) - 0.5;
+            mouseY = (e.clientY / window.innerHeight) - 0.5;
+        });
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            mesh.rotation.y += 0.005;
+            mesh.rotation.x += 0.002;
+            mesh.position.x += ((mouseX * 2 + (window.innerWidth > 768 ? 1.6 : 0)) - mesh.position.x) * 0.05;
+            mesh.position.y += (-mouseY * 2 - mesh.position.y) * 0.05;
+            if(window.bgParticles) {
+                window.bgParticles.rotation.y += 0.001;
+                window.bgParticles.rotation.x += 0.0005;
+            }
+            renderer.render(scene, camera);
+        };
+        
+        // Fire initial execution layout markup setup
+        renderLiveUpdate();
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            mesh.position.x = window.innerWidth > 768 ? 1.6 : 0;
+        });
+
+        /* ====================================================================
+           INTEGRATED AUTO SAVE FEATURE ARCHITECTURE BLOCK
+           ==================================================================== */
+        
+        // 1. Generate the Save Status UI banner dynamically on top of screen
+        const saveIndicator = document.createElement('div');
+        saveIndicator.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background-color: rgba(28, 28, 30, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aeaeb2;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: none;
+        `;
+        document.body.appendChild(saveIndicator);
+
+        let autoSaveTimeout = null;
+
+        // 2. Debounced save trigger orchestrator setup logic
+        function triggerAutoSave() {
+            // Trigger dynamic re-render internally to display changes right away
+            renderLiveUpdate();
+
+            // Display saving indicator module instantly on change sequence execution
+            saveIndicator.style.display = 'block';
+            saveIndicator.innerText = 'Saving...';
+            saveIndicator.style.color = '#aeaeb2';
+
+            // Clear the active timer while user keystroke changes continue
+            if (autoSaveTimeout) {
+                clearTimeout(autoSaveTimeout);
+            }
+
+            // Fire storage save sequence only after 1000ms (1 second) of user inactivity
+            autoSaveTimeout = setTimeout(() => {
+                try {
+                    // Bundle all global parameters inside state variable map payload configuration
+                    const savePayload = {
+                        name: name,
+                        title: title,
+                        about: about,
+                        shape: shape,
+                        color: color,
+                        template: template,
+                        bgStyle: bgStyle,
+                        avatar: avatar,
+                        projects: projects
+                    };
+
+                    // Persist properties into window cache
+                    localStorage.setItem('activePortfolioData', JSON.stringify(savePayload));
+                    
+                    // Toggle confirmation completion metrics cleanly
+                    saveIndicator.innerText = '✓ Last saved just now';
+                    saveIndicator.style.color = '#00ffcc';
+                    
+                } catch (error) {
+                    console.error("Auto-save operation broken:", error);
+                    saveIndicator.style.display = 'none';
+                }
+            }, 1000); 
+        }
+
+        // 3. Exposed global reference so your separate setup/editor script modules can fire auto-saves:
+        window.triggerAutoSave = triggerAutoSave;
+    </script>
+</body>
+</html>
