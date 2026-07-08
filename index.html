@@ -8,7 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    </head>
+</head>
 <body class="dashboard-root">
 
     <nav class="dash-sidebar">
@@ -71,16 +71,35 @@
                     <textarea id="input-about" rows="3">Curious designer, \nimage maker, \nstoryteller</textarea>
                 </div>
 
+                <!-- Professional Summary AI Generator -->
+                <div class="control-group">
+                    <label>Professional Summary (AI)</label>
+                    <textarea id="summary-input" placeholder="Type a few words about your career..."></textarea>
+                    <button id="generate-summary-btn" class="action-btn-generate" style="margin-top: 8px; font-size: 0.8rem; padding: 8px;">✨ Generate AI Summary</button>
+                </div>
+
+                <!-- Skills AI Generator -->
+                <div class="control-group">
+                    <label>Skills & Expertise (AI)</label>
+                    <input type="text" id="skills-keyword" placeholder="e.g. Makeup, Styling, FX">
+                    <button id="generate-skills-btn" class="action-btn-generate" style="margin-top: 8px; font-size: 0.8rem; padding: 8px; background-color: #111;">✨ Generate Skills Tags</button>
+                    <div id="skills-container" class="tags-output" style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 5px;"></div>
+                </div>
+
+                <!-- UPDATED SECTION STARTS HERE -->
                 <div class="control-group">
                     <label>Profile Picture Upload</label>
-                    <div class="avatar-upload-row">
-                        <div id="upload-preview-box" class="upload-preview-square"></div>
-                        <label class="file-input-label">
-                            Upload Photo
-                            <input type="file" id="input-avatar" accept="image/*" style="display: none;">
-                        </label>
+                    <div style="position: relative; width: 100%; margin-top: 8px;">
+                        <div id="upload-preview-box" style="width: 100%; height: 90px; border: 2px dashed #111111; border-radius: 12px; background-color: #ffffff; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s; box-shadow: 4px 4px 0px rgba(0,0,0,0.15); overflow: hidden;">
+                            <div style="text-align: center; pointer-events: none; font-family: 'Montserrat', sans-serif;">
+                                <div style="font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #111111;">Drag image here</div>
+                                <div style="font-size: 0.6rem; color: #666666; font-weight: 400;">or click to browse</div>
+                            </div>
+                        </div>
+                        <input type="file" id="input-avatar" accept="image/*" style="display: none;">
                     </div>
                 </div>
+                <!-- UPDATED SECTION ENDS HERE -->
 
                 <div class="panel-section-title" style="margin-top: 24px;">3D Geometry Matrix</div>
                 <div class="control-group">
@@ -115,7 +134,7 @@
     </aside>
 
     <script src="https://fastly.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
-    
     <script src="app.js"></script>
+    <script src="extension.js"></script>
 </body>
 </html>
