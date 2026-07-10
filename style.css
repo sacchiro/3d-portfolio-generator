@@ -1,3 +1,9 @@
+/* --- 0. MICRO-INTERACTION VARIABLES --- */
+:root {
+    /* Snappy, modern spring-like easing curve for tactile feedback */
+    --brutalist-ease: cubic-bezier(0.25, 1, 0.5, 1);
+}
+
 /* --- 1. CORE LAYOUT STYLES --- */
 body, html {
     margin: 0;
@@ -44,8 +50,36 @@ body, html {
     font-size: 0.9rem;
     margin-bottom: 8px;
     cursor: pointer;
+    position: relative;
+    /* Added smooth transitions for sidebar hover effects */
+    transition: background-color 0.2s var(--brutalist-ease), transform 0.2s var(--brutalist-ease), color 0.2s var(--brutalist-ease);
 }
-.menu-item.active { background: #111111; color: #ffffff; }
+/* Minimal left accent bar indicator */
+.menu-item::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%) scaleX(0);
+    width: 4px;
+    height: 50%;
+    background: #ffffff;
+    transform-origin: left;
+    transition: transform 0.2s var(--brutalist-ease);
+    border-radius: 0 4px 4px 0;
+}
+.menu-item:hover {
+    color: #111111;
+    background-color: rgba(17, 17, 17, 0.05);
+    transform: translateX(4px);
+}
+.menu-item.active { 
+    background: #111111; 
+    color: #ffffff; 
+}
+.menu-item.active::after {
+    transform: translateY(-50%) scaleX(1);
+}
 .menu-icon { margin-right: 14px; }
 .sidebar-footer {
     display: flex;
@@ -102,8 +136,18 @@ body, html {
     cursor: pointer;
     border-radius: 10px;
     margin-left: 8px;
+    /* Smooth scaling and transform logic added */
+    transition: transform 0.15s var(--brutalist-ease), box-shadow 0.15s var(--brutalist-ease), background-color 0.2s ease;
 }
-.view-toggle.active { background: #111111; color: #ffffff; }
+.view-toggle:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0px #111111;
+}
+.view-toggle:active {
+    transform: translateY(1px);
+    box-shadow: 0px 0px 0px #111111;
+}
+.view-toggle.active { background: #111111; color: #ffffff; box-shadow: none !important; transform: none !important; }
 
 .preview-window-container {
     flex-grow: 1;
@@ -125,7 +169,7 @@ body, html {
     overflow: hidden;
     position: relative;
     box-shadow: 10px 10px 0px rgba(17,17,17,0.04);
-    transition: width 0.25s ease, max-width 0.25s ease, height 0.25s ease;
+    transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), max-width 0.25s cubic-bezier(0.4, 0, 0.2, 1), height 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .simulated-browser.mobile-frame { max-width: 380px; height: 100%; }
 
@@ -151,7 +195,7 @@ body, html {
     border: 2px solid #111111;
 }
 
-/* --- 4. PORTFOLIO LANDING CONTENT (DYNAMIC INTEGRATION) --- */
+/* --- 4. PORTFOLIO LANDING CONTENT --- */
 .browser-content-placeholder {
     flex-grow: 1;
     overflow-y: auto;
@@ -164,7 +208,7 @@ body, html {
 
 #three-canvas {
     position: absolute;
-    top: 50px; /* Accounts for address bar space layout offset */
+    top: 50px;
     left: 0;
     width: 100% !important;
     height: calc(100% - 50px) !important;
@@ -186,7 +230,14 @@ body, html {
     overflow: hidden;
     background: #ffffff;
     box-shadow: 4px 4px 0px #111111;
+    /* Added lift animation effect */
+    transition: transform 0.2s var(--brutalist-ease), box-shadow 0.2s var(--brutalist-ease);
 }
+.live-project-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px #111111;
+}
+
 .project-card-image {
     height: 110px;
     background-color: #f0f0ed;
@@ -204,7 +255,14 @@ body, html {
     border-left: 2px solid #111111;
     box-sizing: border-box;
     height: 100vh;
+    /* Added smooth opening entry animation context wrapper */
+    animation: slideInPanel 0.35s var(--brutalist-ease);
 }
+@keyframes slideInPanel {
+    from { opacity: 0; transform: translateX(16px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
 .panel-scroll-wrapper {
     padding: 40px 24px;
     height: 100vh;
@@ -214,6 +272,7 @@ body, html {
 .panel-section-title { font-size: 1.2rem; font-weight: 900; margin-bottom: 24px; }
 .control-group { margin-bottom: 20px; }
 .control-group label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 700; }
+
 .control-group input[type="text"], select, textarea {
     width: 100%;
     padding: 12px 14px;
@@ -224,33 +283,177 @@ body, html {
     font-family: inherit;
     box-sizing: border-box;
     background: #ffffff;
+    /* Added hardware-accelerated transition curves for field focus layouts */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.control-group input[type="text"]:focus, select:focus, textarea:focus {
+    border-color: #111111;
+    box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08);
+    outline: none;
 }
 
 .avatar-upload-row { display: flex; align-items: center; gap: 16px; }
 .upload-preview-square { width: 52px; height: 52px; border: 2px solid #111111; border-radius: 12px; background: #f0f0ed; background-size: cover; background-position: center; }
-.file-input-label { padding: 10px 16px; background: #f0f0ed; border: 2px solid #111111; border-radius: 12px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
+.file-input-label { 
+    padding: 10px 16px; 
+    background: #f0f0ed; 
+    border: 2px solid #111111; 
+    border-radius: 12px; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+    display: inline-block;
+    transition: transform 0.15s var(--brutalist-ease), box-shadow 0.15s var(--brutalist-ease);
+}
+.file-input-label:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0px #111111;
+}
+.file-input-label:active {
+    transform: translateY(1px);
+    box-shadow: 0px 0px 0px #111111;
+}
 
 .color-picker-wrapper { display: flex; align-items: center; gap: 12px; }
-.color-picker-wrapper input[type="color"] { border: 2px solid #111111; width: 40px; height: 40px; border-radius: 8px; padding: 0; cursor: pointer; }
+.color-picker-wrapper input[type="color"] { 
+    border: 2px solid #111111; 
+    width: 40px; 
+    height: 40px; 
+    border-radius: 8px; 
+    padding: 0; 
+    cursor: pointer; 
+    transition: transform 0.15s var(--brutalist-ease);
+}
+.color-picker-wrapper input[type="color"]:hover {
+    transform: scale(1.05);
+}
 .color-value-label { font-size: 0.85rem; font-weight: 700; }
 
 /* --- 7. DYNAMIC PROJECT ROW WORKSPACE --- */
 .project-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.small-action-btn { background: #111111; color: #ffffff; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
+.small-action-btn { 
+    background: #111111; 
+    color: #ffffff; 
+    border: 2px solid #111111; 
+    padding: 6px 12px; 
+    border-radius: 8px; 
+    font-size: 0.75rem; 
+    font-weight: 700; 
+    cursor: pointer; 
+    transition: transform 0.15s var(--brutalist-ease), background-color 0.2s ease, color 0.2s ease;
+}
+.small-action-btn:hover {
+    background: #ffffff;
+    color: #111111;
+    transform: translateY(-1px);
+}
+.small-action-btn:active {
+    transform: translateY(1px);
+}
+
 .panel-drag-sortable-list { display: flex; flex-direction: column; gap: 12px; }
-.panel-project-item { background: #faf9f6; border: 2px solid #111111; border-radius: 12px; padding: 12px; position: relative; cursor: grab; }
-.panel-project-item.dragging { opacity: 0.5; border-style: dashed; }
+.panel-project-item { 
+    background: #faf9f6; 
+    border: 2px solid #111111; 
+    border-radius: 12px; 
+    padding: 12px; 
+    position: relative; 
+    cursor: grab; 
+    /* Smooth physics feedback during list sorting state items */
+    transition: transform 0.2s var(--brutalist-ease), box-shadow 0.2s var(--brutalist-ease), opacity 0.2s ease;
+}
+.panel-project-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 4px 4px 0px rgba(17, 17, 17, 0.08);
+}
+/* Enhanced Drag feedback style overrides */
+.panel-project-item.dragging { 
+    opacity: 0.4; 
+    border-style: dashed; 
+    transform: scale(0.97) translateY(0);
+    box-shadow: none;
+    cursor: grabbing;
+}
+
 .project-item-top { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
 .drag-handle { font-size: 1rem; color: #999; user-select: none; }
-.project-item-top input { flex-grow: 1; padding: 6px 10px; border: 2px solid #111111; border-radius: 6px; font-size: 0.8rem; font-weight: 700; }
-.btn-delete-project { background: none; border: none; color: #ff4444; font-weight: 900; cursor: pointer; font-size: 1.2rem; }
+.project-item-top input { 
+    flex-grow: 1; 
+    padding: 6px 10px; 
+    border: 2px solid #111111; 
+    border-radius: 6px; 
+    font-size: 0.8rem; 
+    font-weight: 700; 
+    transition: border-color 0.2s ease;
+}
+.project-item-top input:focus { border-color: #111111; outline: none; }
+
+.btn-delete-project { 
+    background: none; 
+    border: none; 
+    color: #ff4444; 
+    font-weight: 900; 
+    cursor: pointer; 
+    font-size: 1.2rem; 
+    transition: transform 0.15s var(--brutalist-ease);
+}
+.btn-delete-project:hover { transform: scale(1.15) rotate(5deg); }
+.btn-delete-project:active { transform: scale(0.9); }
+
 .project-item-bottom { display: flex; gap: 8px; align-items: center; }
-.project-item-bottom textarea { flex-grow: 1; padding: 6px 10px; border: 2px solid #111111; border-radius: 6px; font-size: 0.75rem; resize: none; }
-.mini-upload-btn { width: 32px; height: 32px; border: 2px solid #111111; border-radius: 6px; background: #f0f0ed; background-size: cover; background-position: center; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+.project-item-bottom textarea { 
+    flex-grow: 1; 
+    padding: 6px 10px; 
+    border: 2px solid #111111; 
+    border-radius: 6px; 
+    font-size: 0.75rem; 
+    resize: none; 
+    transition: border-color 0.2s ease;
+}
+.project-item-bottom textarea:focus { border-color: #111111; outline: none; }
 
-.action-btn-generate { width: 100%; padding: 16px; background: #111111; color: #ffffff; font-weight: 700; font-family: inherit; border: 2px solid #111111; border-radius: 12px; cursor: pointer; margin-top: auto; }
+.mini-upload-btn { 
+    width: 32px; 
+    height: 32px; 
+    border: 2px solid #111111; 
+    border-radius: 6px; 
+    background: #f0f0ed; 
+    background-size: cover; 
+    background-position: center; 
+    cursor: pointer; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    font-size: 0.8rem; 
+    font-weight: bold; 
+    transition: transform 0.15s var(--brutalist-ease), background-color 0.2s ease;
+}
+.mini-upload-btn:hover { transform: scale(1.05); background-color: #e2e2e0; }
 
-/* --- 7. ASSETS WORKSPACE UI ELEMENT BOARDS --- */
+.action-btn-generate { 
+    width: 100%; 
+    padding: 16px; 
+    background: #111111; 
+    color: #ffffff; 
+    font-weight: 700; 
+    font-family: inherit; 
+    border: 2px solid #111111; 
+    border-radius: 12px; 
+    cursor: pointer; 
+    margin-top: auto; 
+    /* Micro interactions handling execution compile buttons */
+    transition: transform 0.15s var(--brutalist-ease), box-shadow 0.15s var(--brutalist-ease), background-color 0.2s ease;
+}
+.action-btn-generate:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 20px rgba(17, 17, 17, 0.15);
+}
+.action-btn-generate:active {
+    transform: translateY(1px);
+    box-shadow: none;
+}
+
+/* --- 8. ASSETS WORKSPACE UI ELEMENT BOARDS --- */
 .assets-category-tabs {
     display: flex;
     gap: 8px;
@@ -265,12 +468,15 @@ body, html {
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: transform 0.15s var(--brutalist-ease), background-color 0.15s ease, color 0.15s ease;
 }
-
+.asset-tab-btn:hover {
+    transform: translateY(-1px);
+}
 .asset-tab-btn.active {
     background: #111111;
     color: #ffffff;
+    transform: none !important;
 }
 
 .assets-grid-container {
@@ -294,24 +500,31 @@ body, html {
     justify-content: center;
     text-align: center;
     position: relative;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
+    transition: transform 0.2s var(--brutalist-ease), box-shadow 0.2s var(--brutalist-ease), background-color 0.2s ease;
 }
-
 .asset-card:hover {
-    transform: translate(-2px, -2px);
+    transform: translate(-3px, -3px);
     box-shadow: 4px 4px 0px #111111;
 }
-
+.asset-card:active {
+    transform: translate(0, 0);
+    box-shadow: 0px 0px 0px #111111;
+}
 .asset-card.active-mesh {
     background: #f1f0ea;
     border-color: #111111;
-    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.1);
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.08);
+    transform: none !important;
 }
 
 .asset-card .asset-preview-icon {
     font-size: 2rem;
     margin-bottom: 8px;
     user-select: none;
+    transition: transform 0.2s var(--brutalist-ease);
+}
+.asset-card:hover .asset-preview-icon {
+    transform: scale(1.1);
 }
 
 .asset-card span {
@@ -319,7 +532,6 @@ body, html {
     font-weight: 700;
     text-transform: uppercase;
 }
-
 .asset-badge-tag {
     position: absolute;
     top: 6px;
@@ -330,4 +542,130 @@ body, html {
     padding: 2px 6px;
     border-radius: 4px;
     font-weight: 900;
+}
+
+/* --- 9. NEW COMPONENT LAYER EXTENSIONS (TOASTS & SKELETONS) --- */
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 10000;
+}
+.minimal-toast {
+    background: #111111;
+    color: #ffffff;
+    padding: 14px 24px;
+    border-radius: 12px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 2px solid #111111;
+    transform: translateY(20px);
+    opacity: 0;
+    animation: toastPopIn 0.35s var(--brutalist-ease) forwards;
+}
+@keyframes toastPopIn {
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.skeleton-loader {
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0ed 25%, #e2e2e0 50%, #f0f0ed 75%);
+    background-size: 200% 100%;
+    animation: skeletonMovement 1.4s infinite linear;
+    border-radius: 8px;
+}
+@keyframes skeletonMovement {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* --- 10. AI ASSISTANT LAYOUT ELEMENTS --- */
+.ai-panel-container {
+    background-color: #faf9f6;
+    border: 2px solid #111111;
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 24px;
+    box-shadow: 4px 4px 0px #111111;
+}
+
+.ai-pill-badge {
+    background: #111111;
+    color: #ffffff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.ai-inline-btn {
+    background: #ffffff;
+    color: #111111;
+    border: 2px solid #111111;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.15s var(--brutalist-ease), box-shadow 0.15s var(--brutalist-ease), background-color 0.2s ease;
+}
+
+.ai-inline-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 2px 2px 0px #111111;
+    background-color: #faf9f6;
+}
+
+.ai-inline-btn:active {
+    transform: translateY(1px);
+    box-shadow: 0px 0px 0px #111111;
+}
+
+.ai-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(17, 17, 17, 0.4);
+    z-index: 20000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.ai-modal-box {
+    background: #ffffff;
+    border: 2px solid #111111;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 440px;
+    padding: 24px;
+    box-shadow: 8px 8px 0px #111111;
+    box-sizing: border-box;
+}
+
+.ai-modal-preview {
+    background: #faf9f6;
+    border: 2px solid #111111;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    line-height: 1.5;
+    color: #111111;
+    margin-bottom: 20px;
+    white-space: pre-wrap;
 }

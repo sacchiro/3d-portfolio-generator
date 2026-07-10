@@ -168,6 +168,8 @@
                 template: params.get('template'),
                 bgStyle: params.get('bgStyle'),
                 avatar: params.get('avatar'),
+                professionalSummary: params.get('professionalSummary'),
+                skills: params.get('skills'),
                 projects: extractedProjects
             };
 
@@ -188,7 +190,8 @@
         let title = data.title || 'Web Developer';
         let about = data.about || 'Curious Designer';
         let shape = data.shape || 'torus';
-        
+        let summary = data.professionalSummary || 'I am a multimedia designer';
+        let skills = data.skills || 'Design, Multimedia';
         let rawColor = data.color || '00FFCC';
         if (!rawColor.startsWith('#')) rawColor = '#' + rawColor;
         let color = rawColor;
@@ -225,6 +228,30 @@
                     </div>`;
             }).join('');
 
+            // Dynamically format layout skills badges matching the theme text behavior
+            const isDarkTheme = template === 'T2' || template === 'T4';
+            const badgeTextColor = template === 'T1' ? '#111' : (template === 'T2' ? color : (template === 'T4' ? '#000' : '#fff'));
+            const badgeBgColor = template === 'T1' ? '#fff' : (template === 'T2' ? 'rgba(0,255,204,0.1)' : color);
+            const badgeBorder = template === 'T1' ? '3px solid #111' : (template === 'T2' ? `1px solid ${color}` : 'none');
+            const badgeRadius = template === 'T1' ? '0px' : (template === 'T4' ? '8px' : (template === 'T5' ? '4px' : '50px'));
+            const badgeShadow = template === 'T1' ? '4px 4px 0px #111' : 'none';
+
+            const skillsMarkup = skills.split(',')
+                .map(s => s.trim())
+                .filter(s => s.length > 0)
+                .map(s => `<span style="display: inline-block; padding: 6px 14px; margin-right: 8px; margin-bottom: 8px; font-size: 0.85rem; font-weight: 700; background: ${badgeBgColor}; color: ${badgeTextColor}; border: ${badgeBorder}; border-radius: ${badgeRadius}; box-shadow: ${badgeShadow}; text-transform: uppercase; letter-spacing: 0.5px;">${s}</span>`)
+                .join('');
+
+            const extendedFieldsMarkup = `
+                <div style="margin: 40px 0; max-width: 800px; text-align: left; color: ${isDarkTheme ? '#fff' : '#111'}">
+                    <h3 style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; color: ${template === 'T2' ? color : (template === 'T4' ? '#a1a1a6' : 'inherit')}; opacity: 0.85;">Professional Summary</h3>
+                    <p style="font-size: 1.15rem; line-height: 1.6; margin-bottom: 30px; color: ${template === 'T2' ? '#8a99ad' : (template === 'T4' ? '#aeaeb2' : 'inherit')}; opacity: 0.95;">${summary}</p>
+                    
+                    <h3 style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; color: ${template === 'T2' ? color : (template === 'T4' ? '#a1a1a6' : 'inherit')}; opacity: 0.85;">Skills</h3>
+                    <div style="display: flex; flex-wrap: wrap; margin-top: 10px;">${skillsMarkup}</div>
+                </div>
+            `;
+
             // Inject structural framework markup
             if(template === 'T2') {
                 root.className = "portfolio-wrapper tmpl-t2";
@@ -235,6 +262,7 @@
                         <div class="badge" style="border-color:${color}; color:${color}">${title}</div>
                     </div>
                     <h1>${parsedAbout}</h1>
+                    ${extendedFieldsMarkup}
                     <h2 class="grid-title">// System_Log // Selected_Projects</h2>
                     <div class="grid">${projectsMarkup}</div>`;
             } else if(template === 'T3') {
@@ -246,6 +274,7 @@
                         <div class="badge" style="background-color:${color}; color:#111;">${title}</div>
                         <h1 style="margin-top:20px;">${parsedAbout}</h1>
                     </div>
+                    <div style="display: flex; justify-content: center;">${extendedFieldsMarkup}</div>
                     <h2 class="grid-title">Selected Index</h2>
                     <div class="grid">${projectsMarkup}</div>`;
             } else if(template === 'T4') {
@@ -258,6 +287,7 @@
                             <div class="badge" style="background-color:${color}; color:#000;">${title}</div>
                         </div>
                         <h1>${parsedAbout}</h1>
+                        ${extendedFieldsMarkup}
                     </div>
                     <h2 class="grid-title">Index / Nodes</h2>
                     <div class="grid">${projectsMarkup}</div>`;
@@ -270,6 +300,7 @@
                         <div class="badge" style="background-color:${color}; color:#fff;">${title}</div>
                     </div>
                     <h1>${parsedAbout}</h1>
+                    ${extendedFieldsMarkup}
                     <h2 class="grid-title">Selected Artifacts</h2>
                     <div class="grid">${projectsMarkup}</div>`;
             } else {
@@ -281,6 +312,7 @@
                         <div class="badge" style="background-color:${color}; color:#fff;">${title}</div>
                     </div>
                     <h1>${parsedAbout}</h1>
+                    ${extendedFieldsMarkup}
                     <h2 class="grid-title">Selected Work</h2>
                     <div class="grid">${projectsMarkup}</div>`;
             }
@@ -433,6 +465,8 @@
                         template: template,
                         bgStyle: bgStyle,
                         avatar: avatar,
+                        professionalSummary: summary,
+                        skills: skills,
                         projects: projects
                     };
 
@@ -452,6 +486,7 @@
 
         // 3. Exposed global reference so your separate setup/editor script modules can fire auto-saves:
         window.triggerAutoSave = triggerAutoSave;
+        
     </script>
 </body>
 </html>

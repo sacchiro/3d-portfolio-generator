@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (templateEngine) {
             templateEngine.renderTemplateLayout(currentSelectedTemplate, currentName, currentTitle, currentAbout, userAvatarUrl);
            
-            // Fire the native dashboard auto save handler directly[cite: 3]
+            // Fire the native dashboard auto save handler directly
             triggerDashboardAutoSave();
         } 
     } 
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputAvatar = document.getElementById('input-avatar');
         const inputShape = document.getElementById('input-shape');
         const inputColor = document.getElementById('input-color');
-        const inputBgStyle = document.getElementById('input-bg-style'); // Added Control Target Element
+        const inputBgStyle = document.getElementById('input-bg-style'); 
 
         if (inputName) {
             inputName.addEventListener('input', (e) => { userProfileData.name = e.target.value; updateLivePreview(); });
@@ -86,22 +86,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (inputBgStyle) {
             inputBgStyle.addEventListener('change', (e) => { userProfileData.bgStyle = e.target.value; updateLivePreview(); });
         }
+        
+        // Native Click Handling Core (Keeps standard file dialog functioning cleanly)
         if (inputAvatar) {
             inputAvatar.addEventListener('change', (e) => {
                 const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(event) {
-                        userAvatarUrl = event.target.result;
-                        const pBox = document.getElementById('upload-preview-box');
-                        if (pBox) pBox.style.backgroundImage = `url('${userAvatarUrl}')`;
-                        if (sidebarAvatar) sidebarAvatar.style.backgroundImage = `url('${userAvatarUrl}')`;
-                        updateLivePreview();
-                    };
-                    reader.readAsDataURL(file);
-                }
+                handleAvatarFileProcessing(file);
             });
         }
+
+        // Setup Drag & Drop Interface Interaction Core Actions
+        setupAvatarDragAndDropZone();
 
         const currentAddBtn = document.getElementById('btn-add-project');
         if (currentAddBtn) {
@@ -112,6 +107,107 @@ document.addEventListener('DOMContentLoaded', () => {
                 updateLivePreview();
             });
         }
+    }
+
+    // Centered Processing Engine Logic for Avatar Media Conversions
+    function handleAvatarFileProcessing(file) {
+        const pBox = document.getElementById('upload-preview-box');
+        if (!file) return;
+
+        // Validation Matrix Array Filtering Check
+        const acceptedFormats = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+        if (!acceptedFormats.includes(file.type)) {
+            if (pBox) {
+                pBox.style.borderColor = '#FF3B30';
+                pBox.innerHTML = `<div style="padding:10px; color:#FF3B30; font-size:0.75rem; font-weight:900; text-align:center;">ERROR:<br>JPG, PNG OR WEBP ONLY</div>`;
+                setTimeout(() => {
+                    pBox.style.borderColor = '#111111';
+                    renderWorkspaceAvatarStateMarkup();
+                }, 3000);
+            }
+            return;
+        }
+
+        // Process accepted file asset matrix smoothly
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            userAvatarUrl = event.target.result;
+            renderWorkspaceAvatarStateMarkup();
+            if (sidebarAvatar) sidebarAvatar.style.backgroundImage = `url('${userAvatarUrl}')`;
+            updateLivePreview();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Helper UI Utility mapping inner state presentation onto workspace elements
+    function renderWorkspaceAvatarStateMarkup() {
+        const pBox = document.getElementById('upload-preview-box');
+        if (!pBox) return;
+
+        if (userAvatarUrl) {
+            pBox.style.backgroundImage = `url('${userAvatarUrl}')`;
+            pBox.innerHTML = `
+                <div style="position:absolute; inset:0; background:rgba(0,0,0,0.4); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; border-radius:14px; color:#fff; font-size:0.75rem; font-weight:700;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0">
+                    DROP TO REPLACE
+                </div>
+            `;
+        } else {
+            pBox.style.backgroundImage = 'none';
+            pBox.innerHTML = `
+                <div style="text-align:center; pointer-events:none;">
+                    <div style="font-size:1.5rem; margin-bottom:4px;">📥</div>
+                    <div style="font-size:0.75rem; font-weight:800; text-transform:uppercase; letter-spacing:0.5px;">Drag image here</div>
+                    <div style="font-size:0.6rem; color:#666; font-weight:500; margin-top:2px;">or click to browse</div>
+                </div>
+            `;
+        }
+    }
+
+    // Drag-And-Drop Module Controller System Engine
+    function setupAvatarDragAndDropZone() {
+        const pBox = document.getElementById('upload-preview-box');
+        const hiddenInput = document.getElementById('input-avatar');
+        if (!pBox || !hiddenInput) return;
+
+        // Click interaction binding bridge wrapper element target
+        pBox.addEventListener('click', () => {
+            hiddenInput.click();
+        });
+
+        // Prevention baseline parameters definitions mapping logic pipeline
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            pBox.addEventListener(eventName, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+            }, false);
+        });
+
+        // Hover animation triggers active state
+        ['dragenter', 'dragover'].forEach(eventName => {
+            pBox.addEventListener(eventName, () => {
+                pBox.style.transform = 'scale(1.03)';
+                pBox.style.borderColor = userProfileData.color || '#00FFCC';
+                pBox.style.boxShadow = '6px 6px 0px rgba(0,0,0,0.15)';
+                pBox.style.background = 'rgba(0, 255, 204, 0.03)';
+            }, false);
+        });
+
+        // Hover animation removal configurations
+        ['dragleave', 'drop'].forEach(eventName => {
+            pBox.addEventListener(eventName, () => {
+                pBox.style.transform = 'scale(1)';
+                pBox.style.borderColor = '#111111';
+                pBox.style.boxShadow = '4px 4px 0px rgba(0,0,0,0.1)';
+                pBox.style.background = '#ffffff';
+            }, false);
+        });
+
+        // Drop execution hook parsing sequence handler binding structure
+        pBox.addEventListener('drop', (e) => {
+            const transferData = e.dataTransfer;
+            const file = transferData.files[0];
+            handleAvatarFileProcessing(file);
+        }, false);
     }
 
     // Dynamic Project Rendering Framework
@@ -328,7 +424,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.body.addEventListener('click', (e) => {
         if (e.target && (e.target.classList.contains('action-btn-generate') || e.target.innerText.includes('Compile'))) {
             
-            // Bundle all your configuration data into a clean object payload
             const portfolioPayload = {
                 name: userProfileData.name || "Amirah",
                 title: userProfileData.title || "Web Developer",
@@ -341,10 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 projects: projectsArray || []
             };
 
-            // Save the data to local storage so the new window can pull it safely
             localStorage.setItem('activePortfolioData', JSON.stringify(portfolioPayload));
-
-            // Open view.html cleanly without a massive, fragile URL string
             window.open('view.html', '_blank');
         }
     });
@@ -368,7 +460,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 .tmpl-projects-section { width: 100%; padding: 40px 0; margin-top: auto; z-index: 10; }
                 .tmpl-grid-headline { font-size: 1.8rem; font-weight: 900; margin-bottom: 24px; letter-spacing: -1px; }
                 
-                /* Inline Direct Editing Feature Engine UI Additions */
                 [contenteditable="true"] {
                     outline: none;
                     transition: background 0.2s ease, box-shadow 0.2s ease;
@@ -507,7 +598,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Core ContentEditable Direct Event Sync Engine Module 
+    // ContentEditable Direct Event Sync Handlers
     function bindInlineProfileEvents() {
         const inlineName = document.getElementById('inline-edit-name');
         const inlineTitle = document.getElementById('inline-edit-title');
@@ -564,8 +655,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const idx = e.target.dataset.index;
                 if (projectsArray[idx]) {
                     projectsArray[idx].title = e.target.innerText;
-                    
-                    // Live mirror update option data values instantly back into the sidebar row layout components
                     const inputRows = document.querySelectorAll('.panel-project-item');
                     if (inputRows[idx]) {
                         const inputTitle = inputRows[idx].querySelector('.edit-proj-title');
@@ -582,7 +671,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const idx = e.target.dataset.index;
                 if (projectsArray[idx]) {
                     projectsArray[idx].desc = e.target.innerText;
-                    
                     const inputRows = document.querySelectorAll('.panel-project-item');
                     if (inputRows[idx]) {
                         const inputDesc = inputRows[idx].querySelector('.edit-proj-desc');
@@ -779,14 +867,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     <textarea id="input-about" rows="3">${userProfileData.about}</textarea>
                 </div>
                 
+                <!-- Re-engineered Responsive Drag-and-Drop Image Workspace Frame Container Zone -->
                 <div class="control-group">
                     <label>Profile Picture Upload</label>
-                    <div class="avatar-upload-row">
-                        <div id="upload-preview-box" class="upload-preview-square" style="background-image: url('${userAvatarUrl}')"></div>
-                        <label class="file-input-label">
-                            Upload Photo
-                            <input type="file" id="input-avatar" accept="image/*" style="display: none;">
-                        </label>
+                    <div style="position: relative; width: 100%;">
+                        <div id="upload-preview-box" style="width: 100%; height: 130px; border: 2px dashed #111111; border-radius: 14px; background-color: #ffffff; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s, box-shadow 0.2s, background-color 0.2s; box-shadow: 4px 4px 0px rgba(0,0,0,0.1); overflow: hidden; position: relative;">
+                            <!-- State text markup renders here instantly via JavaScript framework calls -->
+                        </div>
+                        <input type="file" id="input-avatar" accept="image/jpeg, image/jpg, image/png, image/webp" style="display: none;">
                     </div>
                 </div>
 
@@ -833,14 +921,17 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         
         bindWorkspaceInputEvents();
+        renderWorkspaceAvatarStateMarkup();
         renderProjects();
+        
+        // Re-inject fields and rebuild listeners upon returning to the Workspace panel view
+        const event = new CustomEvent('DOMContentLoaded');
+        window.dispatchEvent(event);
     }
 
     /* ====================================================================
        DASHBOARD NATIVE AUTO SAVE SYSTEM ARCHITECTURE
        ==================================================================== */
-    
-    // 1. Generate the Save Status UI banner dynamically inside the dashboard page viewport
     const saveIndicator = document.createElement('div');
     saveIndicator.style.cssText = `
         position: fixed;
@@ -863,7 +954,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let autoSaveTimeout = null;
 
-    // 2. Debounced save trigger implementation routing data directly to local storage
     function triggerDashboardAutoSave() {
         saveIndicator.style.display = 'block';
         saveIndicator.innerText = 'SAVING CONFIGURATION...';
