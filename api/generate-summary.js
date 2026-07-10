@@ -1,5 +1,5 @@
 // Secure Vercel API Endpoint: /api/generate-summary
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
@@ -52,12 +52,10 @@ export default async function handler(req, res) {
 
     let textOutput = apiData.candidates[0].content.parts[0].text.trim();
     
-    // BULLETPROOF FIX: Strip markdown code blocks if the AI accidentally added them
     if (textOutput.startsWith("```")) {
       textOutput = textOutput.replace(/^```json\s*/i, "").replace(/```$/, "").trim();
     }
 
-    // Safely parse the cleaned text
     const parsedPayload = JSON.parse(textOutput);
 
     return res.status(200).json({
@@ -66,7 +64,6 @@ export default async function handler(req, res) {
     });
 
   } catch (err) {
-    console.error("Vercel Function Error:", err);
     return res.status(500).json({ error: "Failed to parse AI response safely." });
   }
-}
+};
