@@ -1,5 +1,5 @@
 // Secure Vercel API Endpoint: /api/generate-summary
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -26,9 +26,9 @@ export default async function handler(req, res) {
 
     const userPrompt = `
       User Profile Context data:
-      - Name: ${profile.name}
-      - Profession: ${profile.profession}
-      - Introduction: ${profile.aboutMe}
+      - Name: ${profile.name || "Anonymous"}
+      - Profession: ${profile.profession || "Professional"}
+      - Introduction: ${profile.aboutMe || ""}
       - Projects built: ${JSON.stringify(profile.projects || [])}
     `;
 
@@ -43,16 +43,31 @@ export default async function handler(req, res) {
       })
     });
 
+    if (!apiResponse.ok) {
+      const errorText = await apiResponse.text();
+      console.error("Google Gemini API Error Raw Response:", errorText);
+      return res.status(500).json({ error: "Google AI server rejected the request." });
+    }
+
     const apiData = await apiResponse.json();
     
-    // Parse the data and send it back to your extension.js frontend
-    const textOutput = apiData.candidates[0].content.parts[0].text;
-    const parsedPayload = JSON.parse(textOutput);
+    // Safely look up the nested text structure inside the Gemini response payload
+    if (!apiData.candidates || !apiData.candidates[0]?.content?.parts?.[0]?.text) {
+      console.error("Unexpected Gemini API layout response structure:", JSON.stringify(apiData));
+      return res.status(500).json({ error: "AI network returned an empty context payload layout." });
+    }
 
-    return res.status(200).json(parsedPayload);
+    const textOutput = apiData.candidates[0].content.parts[0].text;
+    const parsedPayload = JSON.parse(textOutput.trim());
+
+    // Send the structured data cleanly back to extension.js
+    return res.status(200).json({
+      summary: parsedPayload.summary || "",
+      skills: parsedPayload.skills || ""
+    });
 
   } catch (err) {
-    console.error(err);
+    console.error("Vercel Serverless Function Crash Logs:", err);
     return res.status(500).json({ error: "Failed to generate context asset mapping." });
   }
-}
+};
